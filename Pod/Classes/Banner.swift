@@ -43,6 +43,8 @@ open class Banner: UIView {
         }
         return nil
     }
+
+    private static let globalTag = 9999
     
     private let contentView = UIView()
     private let labelView = UIView()
@@ -357,6 +359,7 @@ open class Banner: UIView {
             print("[Banner]: Could not find view. Aborting.")
             return
         }
+        tag = Banner.globalTag
         view.addSubview(self)
         forceUpdates()
         let (damping, velocity) = self.springiness.springValues
@@ -373,7 +376,16 @@ open class Banner: UIView {
                 }
         })
     }
-  
+
+    public static func tryDismiss(_ view: UIView? = nil) {
+        let viewToUse = view ?? Banner.topWindow()
+        guard let view = viewToUse else {
+            print("[Banner]: Could not find view. Aborting.")
+            return
+        }
+        view.viewWithTag(Banner.globalTag)?.removeFromSuperview()
+    }
+
     /// Dismisses the banner.
     open func dismiss(_ oldStatusBarStyle: UIStatusBarStyle? = nil) {
         let (damping, velocity) = self.springiness.springValues
